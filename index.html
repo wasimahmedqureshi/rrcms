@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Agent - MPR Reports</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>MPR Report Dashboard</h1>
+  <canvas id="reportChart"></canvas>
+
+  <script>
+    async function loadData() {
+      const response = await fetch("YOUR_GOOGLE_SCRIPT_URL");
+      const data = await response.json();
+
+      // Assume first row is headers, rest is data
+      const headers = data[0];
+      const rows = data.slice(1);
+
+      // Example: Month vs Performance
+      const months = rows.map(r => r[0]); 
+      const performance = rows.map(r => r[1]);
+
+      new Chart(document.getElementById("reportChart"), {
+        type: 'line',
+        data: {
+          labels: months,
+          datasets: [{
+            label: 'Performance',
+            data: performance,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false
+          }]
+        }
+      });
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
