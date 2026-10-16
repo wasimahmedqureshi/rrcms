@@ -1,41 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AI Agent - MPR Reports</title>
+  <title>AI MPR Reports Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    .report { margin-bottom: 40px; }
+  </style>
 </head>
 <body>
-  <h1>MPR Report Dashboard</h1>
-  <canvas id="reportChart"></canvas>
+  <h1>AI Agent MPR Reports</h1>
+
+  <div id="reports"></div>
 
   <script>
-    async function loadData() {
+    async function loadReports() {
       const response = await fetch("YOUR_GOOGLE_SCRIPT_URL");
       const data = await response.json();
 
-      // Assume first row is headers, rest is data
-      const headers = data[0];
-      const rows = data.slice(1);
+      for (const [sheetName, sheetData] of Object.entries(data)) {
+        const headers = sheetData[0];
+        const rows = sheetData.slice(1);
 
-      // Example: Month vs Performance
-      const months = rows.map(r => r[0]); 
-      const performance = rows.map(r => r[1]);
+        const labels = rows.map(r => r[0]);
+        const values = rows.map(r => r[1]);
 
-      new Chart(document.getElementById("reportChart"), {
-        type: 'line',
-        data: {
-          labels: months,
-          datasets: [{
-            label: 'Performance',
-            data: performance,
-            borderColor: 'rgba(75, 192, 192, 1)',
-            fill: false
-          }]
-        }
-      });
+        const canvas = document.createElement("canvas");
+        document.getElementById("reports").appendChild(canvas);
+
+        new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: sheetName,
+              data: values,
+              backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            }]
+          }
+        });
+      }
     }
 
-    loadData();
+    loadReports();
   </script>
 </body>
 </html>
