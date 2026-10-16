@@ -12,38 +12,50 @@
   <h1>AI Agent MPR Reports</h1>
   <div id="reports"></div>
 
-  <script>
-    async function loadReports() {
-      const response = await fetch("YOUR_GOOGLE_SCRIPT_URL");
-      const data = await response.json();
+ <script>
+async function loadReports() {
+  const response = await fetch("YOUR_GOOGLE_SCRIPT_URL");
+  const json = await response.json();
 
-      for (const [sheetName, sheetData] of Object.entries(data)) {
-        const headers = sheetData[0];
-        const rows = sheetData.slice(1);
+  // Extract data from Sheet1
+  const sheetData = json["Sheet1"];
+  const headers = sheetData[0];
+  const rows = sheetData.slice(1);
 
-        const labels = rows.map(r => r[0]);
-        const values = rows.map(r => r[1]);
+  // Create a table
+  const table = document.createElement("table");
+  table.border = "1";
+  table.style.borderCollapse = "collapse";
+  table.style.width = "100%";
 
-        const container = document.createElement("div");
-        container.className = "report";
-        container.innerHTML = `<h2>${sheetName}</h2><canvas></canvas>`;
-        document.getElementById("reports").appendChild(container);
+  // Header row
+  const headerRow = document.createElement("tr");
+  headers.forEach(h => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    th.style.background = "#e0e0e0";
+    th.style.padding = "8px";
+    headerRow.appendChild(th);
+  });
+  table.appendChild(headerRow);
 
-        new Chart(container.querySelector("canvas"), {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: sheetName,
-              data: values,
-              backgroundColor: 'rgba(54, 162, 235, 0.6)'
-            }]
-          }
-        });
-      }
-    }
+  // Data rows
+  rows.forEach(r => {
+    const tr = document.createElement("tr");
+    r.forEach(cell => {
+      const td = document.createElement("td");
+      td.textContent = cell;
+      td.style.padding = "6px";
+      tr.appendChild(td);
+    });
+    table.appendChild(tr);
+  });
 
-    loadReports();
-  </script>
+  document.body.appendChild(table);
+}
+
+loadReports();
+</script>
+
 </body>
 </html>
