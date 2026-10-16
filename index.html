@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AI MPR Reports Dashboard</title>
+  <title>AI Agent MPR Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: Arial; margin: 20px; }
@@ -10,7 +10,6 @@
 </head>
 <body>
   <h1>AI Agent MPR Reports</h1>
-
   <div id="reports"></div>
 
   <script>
@@ -25,10 +24,12 @@
         const labels = rows.map(r => r[0]);
         const values = rows.map(r => r[1]);
 
-        const canvas = document.createElement("canvas");
-        document.getElementById("reports").appendChild(canvas);
+        const container = document.createElement("div");
+        container.className = "report";
+        container.innerHTML = `<h2>${sheetName}</h2><canvas></canvas>`;
+        document.getElementById("reports").appendChild(container);
 
-        new Chart(canvas, {
+        new Chart(container.querySelector("canvas"), {
           type: 'bar',
           data: {
             labels: labels,
